@@ -6,7 +6,7 @@
 # of tweets; e.g., mentions, hashtags, and the user being retweeted
 # (if applicable)
 
-from re import sub
+import re
 
 def isRT(tweetstring):
     if tweetstring[:4] == 'RT @':
@@ -19,43 +19,38 @@ def isRT(tweetstring):
 def hashtags(tweetstring):
     #given the text of a tweet as a string, this function returns a list of
     #all hashtags which were used in the tweet
-    tweetstring += ' '
-    hashtags = ''
-    record = False
+    hashtag = [re.sub(r"(\W+)$", "", j) for j in set([i for i in tweetstring.split() if i.startswith("#")])]
+
+    for i in range(len(hashtag)):
+        if ',' in hashtag[i]:
+            hashtag[i] = hashtag[i].split(',')[0]
+        if 'http' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('http')[0]
 
 
-    for char in tweetstring:
-        if char == '#':
-            record = True
-        if record:
-            hashtags += char
-            if char == ' ':
-                record = False
+    return hashtag
 
-    hashtags = sub('[.,]','',hashtags)
-    hashtags = hashtags.split()
-    return hashtags
 
 def mentions(tweetstring):
     #given the text of a tweet as a string, this function returns a string of
     #all twitter usernames mentioned in the tweet, separated by spaces
-    mentions = ''
-    record = False
-
-    # So we ignore the mention from the RT
     if tweetstring[:4] == 'RT @':
         tweetstring = tweetstring[4:]
 
-    for char in tweetstring:
-        if char == '@':
-            record = True
-        if record:
-            mentions += char
-            if char == ' ':
-                record = False
+    mentions = [re.sub(r"(\W+)$", "", j) for j in set([i for i in tweetstring.split() if i.startswith("@")])]
 
-    mentions = sub('[.,]','',mentions)
-    mentions = mentions.split()
+    for i in range(len(mentions)):
+        if ',' in mentions[i]:
+            mentions[i] = mentions[i].split(',')[0]
+        if '.' in mentions[i]:
+            mentions[i] = mentions[i].split('.')[0]
+        if 'http' in mentions[i]:
+            mentions[i] = mentions[i].split('http')[0]
+        if ':' in mentions[i]:
+            mentions[i] = mentions[i].split(':')[0]
+        if "'" in mentions[i]:
+            mentions[i] = mentions[i].split("'")[0]
+
 
     return mentions
 

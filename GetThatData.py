@@ -60,20 +60,13 @@ def WriteHashtags():
     f.write('User,HashTag,isRT\n')
     f.close()
 
-def    GrabHashtags():
+def GrabHashtags():
     import DataPath
     DFPath, TweetPath = DataPath.getPaths()
     # create the csv file
-    f = open(DFPath + 'RTList.csv','w+')
-    f.write('User,RTtext\n')
-    f.close()
-
-    f = open(DFPath + 'RTList.csv','a+')
-
+    f = open('HashTagList.csv','a')
 
     Users = GrabAccounts()
-
-    f = open('HashTagList.csv','a')
     i = 0
     for User in Users:
         print i
@@ -90,6 +83,40 @@ def    GrabHashtags():
             hashtags = te.hashtags(tweet)
 
             for hashtag in hashtags:
-                f.write(User + ',' + hashtag + ',' + isRT + '\n')
+                if hashtag != '':
+                    f.write(User + ',' + hashtag + ',' + isRT + '\n')
+
+        i = i+1
+
+def WriteMentions():
+    f = open('MentionList.csv','w+')
+    f.write('User,Mention,isRT\n')
+    f.close()
+
+def GrabMentions():
+    import DataPath
+    DFPath, TweetPath = DataPath.getPaths()
+    # create the csv file
+    f = open('MentionList.csv','a')
+
+    Users = GrabAccounts()
+    i = 0
+    for User in Users:
+        print i
+        import DataPath
+        DFPath, TweetPath = DataPath.getPaths()
+
+        # For each user go through all of their tweets and mine the
+        # hashtags
+
+        print 'Fetching the Mentions from ' + User
+        UserData = pd.read_csv(TweetPath + User + r'_tweets.csv' )
+        for tweet in UserData['text']:
+            isRT = te.isRT(tweet)
+            mentions = te.mentions(tweet)
+
+            for mention in mentions:
+                if mention != '':
+                    f.write(User + ',' + mention + ',' + isRT + '\n')
 
         i = i+1
