@@ -86,6 +86,8 @@ def mentions(tweetstring):
             mentions[i] = mentions[i].split("?")[0]
         if '"' in mentions[i]:
             mentions[i] = mentions[i].split('"')[0]
+        if '|' in mentions[i]:
+            mentions[i] = mentions[i].split('|')[0]
 
 
 
