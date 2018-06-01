@@ -60,6 +60,8 @@ def WriteHashtags():
     f.write('User,HashTag,isRT\n')
     f.close()
 
+# This function grabs each hashtag and stores it in the csv created by
+# WriteHashtags()
 def GrabHashtags():
     import DataPath
     DFPath, TweetPath = DataPath.getPaths()
@@ -88,11 +90,41 @@ def GrabHashtags():
 
         i = i+1
 
+# Create a csv that keeps track of how many times each person uses a hashtag
+def WhatHashtags():
+    import DataPath
+    DFPath, TweetPath = DataPath.getPaths()
+
+    f = open('WhatHashtags.csv','w+')
+    f.write('User,isRT,Hashtag,TimesUsed\n')
+    f.close()
+
+    HashtagList = pd.read_csv(DFPath + r'2Tweet2Furious\\HashtagList.csv')
+    Users = list(HashtagList['User'].value_counts().index)
+
+    f = open('WhatHashtags.csv','a')
+    j = 0
+    for User in Users:
+        print j
+        UserFile = HashtagList[HashtagList['User'] == User]
+        UserFileRT = UserFile[UserFile['isRT'] == 'Y']['HashTag'].value_counts()
+        UserFileNRT = UserFile[UserFile['isRT'] == 'N']['HashTag'].value_counts()
+
+        for i in range(len(UserFileRT)):
+            f.write(User + ',' + 'Y' + ',' + str(UserFileRT.index[i]) + ',' + str(UserFileRT[i]) + '\n')
+        for i in range(len(UserFileNRT)):
+            f.write(User + ',' + 'N' + ',' + str(UserFileNRT.index[i]) + ',' + str(UserFileNRT[i]) + '\n')
+        j = j +1
+
+    f.close()
+
+# Create a Mention csv
 def WriteMentions():
     f = open('MentionList.csv','w+')
     f.write('User,Mention,isRT\n')
     f.close()
 
+# Write Mentions to the csv created by WriteMentions()
 def GrabMentions():
     import DataPath
     DFPath, TweetPath = DataPath.getPaths()

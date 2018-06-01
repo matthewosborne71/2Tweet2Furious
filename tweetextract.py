@@ -21,11 +21,41 @@ def hashtags(tweetstring):
     #all hashtags which were used in the tweet
     hashtag = [re.sub(r"(\W+)$", "", j) for j in set([i for i in tweetstring.split() if i.startswith("#")])]
 
+    filler = []
+    for i in range(len(hashtag)):
+        mediary = hashtag[i].split("#")[1:]
+        for i in range(len(mediary)):
+            filler.extend(["#" + mediary[i]])
+
+    hashtag = filler
+
     for i in range(len(hashtag)):
         if ',' in hashtag[i]:
             hashtag[i] = hashtag[i].split(',')[0]
         if 'http' in hashtag[i]:
             hashtag[i] = hashtag[i].split('http')[0]
+        if '.' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('.')[0]
+        if "'" in hashtag[i]:
+            hashtag[i] = hashtag[i].split("'")[0]
+        if ':' in hashtag[i]:
+            hashtag[i] = hashtag[i].split(':')[0]
+        if '-' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('-')[0]
+        if '?' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('?')[0]
+        if '|' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('|')[0]
+        if '"' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('"')[0]
+        if '@' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('@')[0]
+        if "''" in hashtag[i]:
+            hashtag[i] = hashtag[i].split("'")[0]
+        if '!' in hashtag[i]:
+            hashtag[i] = hashtag[i].split('!')[0]
+
+
 
 
     return hashtag
@@ -50,6 +80,13 @@ def mentions(tweetstring):
             mentions[i] = mentions[i].split(':')[0]
         if "'" in mentions[i]:
             mentions[i] = mentions[i].split("'")[0]
+        if "!" in mentions[i]:
+            mentions[i] = mentions[i].split("!")[0]
+        if "?" in mentions[i]:
+            mentions[i] = mentions[i].split("?")[0]
+        if '"' in mentions[i]:
+            mentions[i] = mentions[i].split('"')[0]
+
 
 
     return mentions
