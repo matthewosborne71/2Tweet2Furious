@@ -1,3 +1,6 @@
 DataPath.py
 AuthTokens.txt
 DataPath.txt
+
+*.csv
+*.pyc
