@@ -1,1 +1,4 @@
-DataPath.py DataPath.pyc GetThatData.pyc MakeDozeNetworksFriendo.pyc tweetextract.pyc HashTagList.csv
+DataPath.py
+
+*.pyc
+*.csv
