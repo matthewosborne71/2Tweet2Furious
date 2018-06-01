@@ -6,12 +6,24 @@
 # of tweets; e.g., mentions, hashtags, and the user being retweeted
 # (if applicable)
 
+from re import sub
+
+def isRT(tweetstring):
+    if tweetstring[:4] == 'RT @':
+        isRT = 'Y'
+    else:
+        isRT = 'N'
+
+    return isRT
+
 def hashtags(tweetstring):
     #given the text of a tweet as a string, this function returns a list of
     #all hashtags which were used in the tweet
     tweetstring += ' '
     hashtags = ''
     record = False
+
+
     for char in tweetstring:
         if char == '#':
             record = True
@@ -19,6 +31,9 @@ def hashtags(tweetstring):
             hashtags += char
             if char == ' ':
                 record = False
+
+    hashtags = sub('[.,]','',hashtags)
+    hashtags = hashtags.split()
     return hashtags
 
 def mentions(tweetstring):
@@ -26,6 +41,11 @@ def mentions(tweetstring):
     #all twitter usernames mentioned in the tweet, separated by spaces
     mentions = ''
     record = False
+
+    # So we ignore the mention from the RT
+    if tweetstring[:4] == 'RT @':
+        tweetstring = tweetstring[4:]
+
     for char in tweetstring:
         if char == '@':
             record = True
@@ -33,6 +53,10 @@ def mentions(tweetstring):
             mentions += char
             if char == ' ':
                 record = False
+
+    mentions = sub('[.,]','',mentions)
+    mentions = mentions.split()
+
     return mentions
 
 def RTing(tweetstring):
