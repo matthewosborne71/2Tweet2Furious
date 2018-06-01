@@ -2,7 +2,9 @@
 ## allow you to grab data from our users and their tweets
 ############################################################
 ## Matthew Osborne
-## Last Updated: May 30, 2018
+## Austin Antoniou, Dan McGregor, Luke Andrejek
+##
+## Last Updated: May 31, 2018
 ###########################################################
 ## Note: DataPath is a python file containing the file paths to the
 ## data on my machine. In order to make the code work you will need to
@@ -11,6 +13,7 @@
 
 
 import pandas as pd
+import tweetextract as te
 
 # A function that will grab all of the usernames of the 2247 accounts
 def GrabAccounts():
@@ -54,21 +57,39 @@ def GrabRTs():
 # into a csv file
 def WriteHashtags():
     f = open('HashTagList.csv','w+')
-    f.write('User,HashTag,RT\n')
+    f.write('User,HashTag,isRT\n')
     f.close()
 
 def    GrabHashtags():
+    import DataPath
+    DFPath, TweetPath = DataPath.getPaths()
+    # create the csv file
+    f = open(DFPath + 'RTList.csv','w+')
+    f.write('User,RTtext\n')
+    f.close()
+
+    f = open(DFPath + 'RTList.csv','a+')
+
+
+    Users = GrabAccounts()
 
     f = open('HashTagList.csv','a')
+    i = 0
     for User in Users:
+        print i
         import DataPath
         DFPath, TweetPath = DataPath.getPaths()
 
         # For each user go through all of their tweets and mine the
         # hashtags
-        print 'a'
 
-        print 'Fetching the Hashtags from' + User
+        print 'Fetching the Hashtags from ' + User
         UserData = pd.read_csv(TweetPath + User + r'_tweets.csv' )
         for tweet in UserData['text']:
-            print 'a'
+            isRT = te.isRT(tweet)
+            hashtags = te.hashtags(tweet)
+
+            for hashtag in hashtags:
+                f.write(User + ',' + hashtag + ',' + isRT + '\n')
+
+        i = i+1
