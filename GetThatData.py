@@ -91,36 +91,63 @@ def GrabHashtags():
         i = i+1
 
 # Create a csv that keeps track of how many times each person uses a hashtag
-def WhatHashtags():
+# condensed must be True or False
+def WhatHashtags(condensed):
     import DataPath
     DFPath, TweetPath = DataPath.getPaths()
 
     # Open the csv where data will be written
-    f = open('WhatHashtags.csv','w+')
-    f.write('User,isRT,Hashtag,TimesUsed\n')
-    f.close()
+    if condensed == False:
+        f = open('WhatHashtags.csv','w+')
+        f.write('User,isRT,Hashtag,TimesUsed\n')
+        f.close()
 
-    # Get the Users
-    HashtagList = pd.read_csv(DFPath + r'2Tweet2Furious\\HashtagList.csv')
-    Users = list(HashtagList['User'].value_counts().index)
+        # Get the Users
+        HashtagList = pd.read_csv(DFPath + r'2Tweet2Furious\\HashtagList.csv')
+        Users = list(HashtagList['User'].value_counts().index)
 
-    # For each User we will find the unique hashtags they have used along with
-    # the number of times they used that hashtag
-    f = open('WhatHashtags.csv','a')
-    j = 0
-    for User in Users:
-        print j
-        UserFile = HashtagList[HashtagList['User'] == User]
-        UserFileRT = UserFile[UserFile['isRT'] == 'Y']['HashTag'].value_counts()
-        UserFileNRT = UserFile[UserFile['isRT'] == 'N']['HashTag'].value_counts()
+        # For each User we will find the unique hashtags they have used along with
+        # the number of times they used that hashtag
+        f = open('WhatHashtags.csv','a')
+        j = 0
+        for User in Users:
+            print j
+            UserFile = HashtagList[HashtagList['User'] == User]
+            UserFileRT = UserFile[UserFile['isRT'] == 'Y']['HashTag'].value_counts()
+            UserFileNRT = UserFile[UserFile['isRT'] == 'N']['HashTag'].value_counts()
 
-        for i in range(len(UserFileRT)):
-            f.write(User + ',' + 'Y' + ',' + str(UserFileRT.index[i]) + ',' + str(UserFileRT[i]) + '\n')
-        for i in range(len(UserFileNRT)):
-            f.write(User + ',' + 'N' + ',' + str(UserFileNRT.index[i]) + ',' + str(UserFileNRT[i]) + '\n')
-        j = j +1
+            for i in range(len(UserFileRT)):
+                f.write(User + ',' + 'Y' + ',' + str(UserFileRT.index[i]) + ',' + str(UserFileRT[i]) + '\n')
+            for i in range(len(UserFileNRT)):
+                f.write(User + ',' + 'N' + ',' + str(UserFileNRT.index[i]) + ',' + str(UserFileNRT[i]) + '\n')
+            j = j +1
 
-    f.close()
+        f.close()
+    elif condensed == True:
+        f = open('WhatHashtagsCondensed.csv','w+')
+        f.write('User,Hashtag,TimesUsed\n')
+        f.close()
+
+        # Get the Users
+        HashtagList = pd.read_csv(DFPath + r'2Tweet2Furious\\HashtagList.csv')
+        Users = list(HashtagList['User'].value_counts().index)
+
+        # For each User we will find the unique hashtags they have used along with
+        # the number of times they used that hashtag
+        f = open('WhatHashtagsCondensed.csv','a')
+        j = 0
+        for User in Users:
+            print j
+            UserFile = HashtagList[HashtagList['User'] == User]
+            UserHashtags = UserFile['HashTag'].value_counts()
+
+            for i in range(len(UserHashtags)):
+                f.write(User + ',' + str(UserHashtags.index[i]) + ',' + str(UserHashtags[i]) + '\n')
+
+            j = j +1
+
+        f.close()
+
 
 # Create a Mention csv
 def WriteMentions():
@@ -158,33 +185,58 @@ def GrabMentions():
         i = i+1
 
 # Create a csv that keeps track of how many times each person uses a hashtag
-def WhatMentions():
+# condensed must be either True or False
+def WhatMentions(condensed):
     import DataPath
     DFPath, TweetPath = DataPath.getPaths()
 
-    # Open the csv where data will be written
-    f = open('WhatMentions.csv','w+')
-    f.write('User,isRT,Mention,TimesUsed\n')
-    f.close()
+    if condensed == False:
+        # Open the csv where data will be written
+        f = open('WhatMentions.csv','w+')
+        f.write('User,isRT,Mention,TimesUsed\n')
+        f.close()
 
-    # Get the Users
-    MentionList = pd.read_csv(DFPath + r'2Tweet2Furious\\MentionList.csv')
-    Users = list(MentionList['User'].value_counts().index)
+        # Get the Users
+        MentionList = pd.read_csv(DFPath + r'2Tweet2Furious\\MentionList.csv')
+        Users = list(MentionList['User'].value_counts().index)
 
-    # For each User we will find the unique hashtags they have used along with
-    # the number of times they used that hashtag
-    f = open('WhatMentions.csv','a')
-    j = 0
-    for User in Users:
-        print j
-        UserFile = MentionList[MentionList['User'] == User]
-        UserFileRT = UserFile[UserFile['isRT'] == 'Y']['Mention'].value_counts()
-        UserFileNRT = UserFile[UserFile['isRT'] == 'N']['Mention'].value_counts()
+        # For each User we will find the unique hashtags they have used along with
+        # the number of times they used that hashtag
+        f = open('WhatMentions.csv','a')
+        j = 0
+        for User in Users:
+            print j
+            UserFile = MentionList[MentionList['User'] == User]
+            UserFileRT = UserFile[UserFile['isRT'] == 'Y']['Mention'].value_counts()
+            UserFileNRT = UserFile[UserFile['isRT'] == 'N']['Mention'].value_counts()
 
-        for i in range(len(UserFileRT)):
-            f.write(User + ',' + 'Y' + ',' + str(UserFileRT.index[i]) + ',' + str(UserFileRT[i]) + '\n')
-        for i in range(len(UserFileNRT)):
-            f.write(User + ',' + 'N' + ',' + str(UserFileNRT.index[i]) + ',' + str(UserFileNRT[i]) + '\n')
-        j = j +1
+            for i in range(len(UserFileRT)):
+                f.write(User + ',' + 'Y' + ',' + str(UserFileRT.index[i]) + ',' + str(UserFileRT[i]) + '\n')
+            for i in range(len(UserFileNRT)):
+                f.write(User + ',' + 'N' + ',' + str(UserFileNRT.index[i]) + ',' + str(UserFileNRT[i]) + '\n')
+            j = j +1
 
-    f.close()
+        f.close()
+    elif condensed == True:
+        f = open('WhatMentionsCondensed.csv','w+')
+        f.write('User,Mention,TimesUsed\n')
+        f.close()
+
+        # Get the Users
+        MentionList = pd.read_csv(DFPath + r'2Tweet2Furious\\MentionList.csv')
+        Users = list(MentionList['User'].value_counts().index)
+
+        # For each User we will find the unique hashtags they have used along with
+        # the number of times they used that hashtag
+        f = open('WhatMentionsCondensed.csv','a')
+        j = 0
+        for User in Users:
+            print j
+            UserFile = MentionList[MentionList['User'] == User]
+            UserMentions = UserFile['Mention'].value_counts()
+
+            for i in range(len(UserMentions)):
+                f.write(User + ',' + str(UserMentions.index[i]) + ',' + str(UserMentions[i]) + '\n')
+            j = j +1
+
+        f.close()
