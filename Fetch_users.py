@@ -2,34 +2,28 @@
 ##      Fetch_Users                                                           ##
 ##      Dan McGregor                                                          ##
 ################################################################################
-##      Last Updated: June 1, 2018                                            ##
+##      Last Updated: June 2, 2018                                            ##
 ################################################################################
 ## This file looks up each user on twitter using twitter's API and records    ##
 ## the information in a csv file                                              ##
 ################################################################################
 
+
 import tweepy
 import time
 import os
+
+# Reads in the path for the data files
+import DataPath
+DFPath, TweetPath = DataPath.getPaths()
 
 # Sets the separation for the csv file, using tabs because some fields in the
 # user information may contain commas
 sep = '\t'
 
 # Reads in the tokens that will be needed to connect to the twitter API
-f = open('AuthTokens.txt', 'r')
-(consumer_token, consumer_secret, access_token, access_token_secret) = f.readlines()
-f.close()
-consumer_token = consumer_token[:-1]
-consumer_secret = consumer_secret[:-1]
-access_token = access_token[:-1]
-access_token_secret = access_token_secret[:-1]
-
-# Reads in the path for the data files
-f = open('DataPath.txt', 'r')
-path = f.readline()
-f.close()
-path = path[:-1]
+import AuthTokens
+consumer_token, consumer_secret, access_token, access_token_secret = AuthTokens.getTokens()
 
 # Sets up the authentication and connects to the API
 auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
@@ -113,7 +107,7 @@ def get_user_info(username):
 	return line
 
 # Creates the csv file and initializes the first line as a header
-f = open('User_info.csv', 'w+')
+f = open(DFPath + 'User_info.csv', 'w+')
 line = 'Username'
 line += sep + 'Status'
 line += sep + 'Background'
@@ -144,7 +138,7 @@ k = api.rate_limit_status()['resources']['users']['/users/show/:id']['remaining'
 
 # Loops through every user, attempts to 'get_user_info' and record to the csv
 # file, has some logic for handling the rate limit as well as various errors
-for file_name in sorted(os.listdir(path)):
+for file_name in sorted(os.listdir(TweetPath)):
 
 	# 'usercount' is used in the debug print statements
 	usercount = format(i, '04d')
