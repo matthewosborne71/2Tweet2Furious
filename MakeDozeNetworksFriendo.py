@@ -219,9 +219,27 @@ def BuildGraph(Type,Tol):
     else:
         print "Sorry we don't support that type of network!"
 
-def DrawNetworkxGraph(G,pos,Size,Weights):
+def DrawNetworkxGraph(G,pos,Weights,Size=5):
     plt.figure(figsize = (20,20))
     plt.axis('off')
     nx.draw_networkx_nodes(G,pos,node_size=Size)
     nx.draw_networkx_edges(G,pos,width=Weights)
     plt.show()
+
+def MakeHVGraph(G):
+    # Set plot options
+    print "Setting plot options"
+    options = {'Graph': dict(node_size = 5, edge_line_width = .2,height=1000,width=1000,xaxis=None,yaxis=None)}
+    padding = dict(x=(-1.2, 1.2), y=(-1.2, 1.2))
+    # Make a holoviews graph
+    print "Making the Interactive graph"
+    Graph = hv.Graph.from_networkx(G,nx.spring_layout).redim.range(**padding)
+    del G
+
+    # This makes the html graph
+    renderer = hv.renderer('bokeh')
+    renderer.save(Graph,'hvplot.html')
+    plot = renderer.get_plot(Graph.options(options)).state
+    from bokeh.io import output_file, save, show
+    save(plot, 'hvplot.html')
+    show(plot)

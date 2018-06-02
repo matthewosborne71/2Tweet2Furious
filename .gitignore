@@ -4,3 +4,5 @@ Error_log.txt
 
 *.csv
 *.pyc
+*.html
+*.ipynb
