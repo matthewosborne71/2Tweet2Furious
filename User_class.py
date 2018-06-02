@@ -77,12 +77,14 @@ class User:
 		Returns the specified attribute of the user as a unicode string.
 		If attribute is '', returns 'N/A'. Argument is not case sensitive.
 		"""
+		# Raises a TypeError if the attribute is not a string or unicode
 		if (type(attribute) is not str) and (type(attribute) is not unicode):
 			raise TypeError('Attribute should be a string or unicode.')
 
+		# Raises a TypeError if the username is not a string or unicode
 		attribute = attribute.capitalize()
 		try:
-			if self.attributes[attribute] == ''
+			if self.attributes[attribute] == '': 
 				return 'N/A'
 			return self.attributes[attribute].replace('\\n', '\n').decode('utf-8')
 		except KeyError:
