@@ -1,6 +1,5 @@
 DataPath.py
-AuthTokens.txt
-DataPath.txt
+AuthTokens.py
 Error_log.txt
 
 *.csv

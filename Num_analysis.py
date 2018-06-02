@@ -2,7 +2,7 @@
 ##      Num_analysis                                                          ##
 ##      Dan McGregor                                                          ##
 ################################################################################
-##      Last Updated: June 1, 2018                                            ##
+##      Last Updated: June 2, 2018                                            ##
 ################################################################################
 ## This file computes the frequency of numbers in the twitter usernames       ##
 ## and compares against a uniform distribution using a chi square test        ##
@@ -10,20 +10,19 @@
 
 
 import scipy.stats as stats
+import os
+
+# Reads in the path for the data files
+import DataPath
+DFPath, TweetPath = DataPath.getPaths()
 
 # Initializes the num_dict to store number frequency data
 num_dict = {}
 for i in range(0, 10):
 	num_dict[str(i)] = 0
 
-# Reads in the path for the data files
-f = open('DataPath.txt', 'r')
-path = f.readline()
-f.close()
-path = path[:-1]
-
 # Loops through every file and extracts the numbers from the usernames
-for file_name in sorted(os.listdir(path)):
+for file_name in sorted(os.listdir(TweetPath)):
 	nums = file_name[-19:-11]
 	for i in nums:
 		num_dict[i] += 1
