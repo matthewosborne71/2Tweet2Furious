@@ -37,7 +37,6 @@ def MakeEdgeList(Data,EdgeListName,type):
     # Make a list of users for searching purposes
     UserList = list(set(EdgeData['User']))
 
-
     # Check the type to decide what kind of network we're building
     if type == 'RT':
         print 'We are building a retweet edgelist!'
@@ -61,9 +60,38 @@ def MakeEdgeList(Data,EdgeListName,type):
         f.close()
     elif type == 'HT':
         print 'We are building a hashtag edgelist!'
+        # For each user in the file check through all other users to see what
+        # hashtags the users have in commonself.
+        i = 0
+        for name1 in UserList:
+            print i
+            EData = EdgeData[EdgeData['TimesUsed']>2]
+            a  = set(EData['Hashtag'][EData['User']==name1])
+            for name2 in UserList[i+1:]:
+                b = set(EData['Hashtag'][EData['User']==name2])
+                c = a.intersection(b)
+                if c:
+                    f.write(name1 + ',' + name2 + ',' + str(len(c)) + '\n')
+            i = i + 1
+
+        f.close()
+
 
     elif type == 'Ment':
         print 'We are building a mention edgelist!'
+        i = 0
+        for name1 in UserList:
+            print i
+            EData = EdgeData[EdgeData['TimesUsed']>3]
+            a = set(EData['Mention'][EData['User']==name1])
+            for name2 in UserList[i+1:]:
+                b = set(EData['Mention'][EData['User']==name2])
+                c = a.intersection(b)
+                if c:
+                    f.write(name1 + ',' + name2 + ',' + str(len(c)) + '\n')
+
+            i=i+1
+        f.close()
 
     else:
         print 'Sorry the type you have entered is not currently supported'
