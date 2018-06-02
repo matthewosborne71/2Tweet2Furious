@@ -138,7 +138,7 @@ def BuildGraph(Type,Tol):
         pos = nx.spring_layout(G)
         edgewidth = [d['weight'] for (u,v,d) in G.edges(data=True)]
 
-        return G
+        return G, pos, edgewidth
 
     # Make a Hashtag Network
     elif Type == 'HT':
@@ -176,7 +176,7 @@ def BuildGraph(Type,Tol):
         pos = nx.spring_layout(G)
         edgewidth = [d['weight'] for (u,v,d) in G.edges(data=True)]
 
-        return G
+        return G, pos, edgewidth
 
     # Make a mention network
     elif Type == 'Ment':
@@ -214,7 +214,14 @@ def BuildGraph(Type,Tol):
         pos = nx.spring_layout(G)
         edgewidth = [d['weight'] for (u,v,d) in G.edges(data=True)]
 
-        return G
+        return G, pos, edgewidth
 
     else:
         print "Sorry we don't support that type of network!"
+
+def DrawNetworkxGraph(G,pos,Size,Weights):
+    plt.figure(figsize = (20,20))
+    plt.axis('off')
+    nx.draw_networkx_nodes(G,pos,node_size=Size)
+    nx.draw_networkx_edges(G,pos,width=Weights)
+    plt.show()
