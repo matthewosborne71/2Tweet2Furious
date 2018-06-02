@@ -95,3 +95,126 @@ def MakeEdgeList(Data,EdgeListName,type):
 
     else:
         print 'Sorry the type you have entered is not currently supported'
+
+# This function will take in a type and minimal edge weight, Tol, and spit out a
+# networkx graph object
+def BuildGraph(Type,Tol):
+    print 'You are making a graph of type: ' + Type
+    print 'Tolerance Level is: ' + str(Tol)
+
+    # Make a Retweet Network
+    if Type == 'RT':
+        print 'Getting Edges'
+        EdgeList = pd.read_csv(DFPath + r"2Tweet2Furious\\ShortRTEdgeList.csv")
+
+        # Find the maximum weight of all the Edges
+        maxWeight = float(max(EdgeList['Weight']))
+
+        # Scale the weights
+        Weights = list(EdgeList['Weight'][EdgeList['Weight']>=Tol].values.flatten()/maxWeight)
+
+        # Get the users
+        User1 = list(EdgeList['User1'][EdgeList['Weight']>=Tol].values.flatten())
+        User2 = list(EdgeList['User2'][EdgeList['Weight']>=Tol].values.flatten())
+
+        # Clear the large edgelist from memory
+        del EdgeList
+
+        EdgeList = zip(User1,User2,Weights)
+
+        # Make the Graph
+        print 'Making Graph'
+        G = nx.Graph()
+
+        print 'Adding Nodes to Graph'
+        nodes = list(set(User1).union(set(User2)))
+        G.add_nodes_from(nodes)
+
+        # Add the appropriate edges
+        print 'Adding Edges to the Graph'
+        G.add_weighted_edges_from(EdgeList)
+
+        # Use networkx to set an appealing position
+        pos = nx.spring_layout(G)
+        edgewidth = [d['weight'] for (u,v,d) in G.edges(data=True)]
+
+        return G
+
+    # Make a Hashtag Network
+    elif Type == 'HT':
+        print 'Getting Edges'
+        EdgeList = pd.read_csv(DFPath + r"2Tweet2Furious\\HashtagEdgeList.csv")
+
+        # Find the maximum weight of all the Edges
+        maxWeight = float(max(EdgeList['Weight']))
+
+        # Scale the weights
+        Weights = list(EdgeList['Weight'][EdgeList['Weight']>=Tol].values.flatten()/maxWeight)
+
+        # Get the users
+        User1 = list(EdgeList['User1'][EdgeList['Weight']>=Tol].values.flatten())
+        User2 = list(EdgeList['User2'][EdgeList['Weight']>=Tol].values.flatten())
+
+        # Clear the large edgelist from memory
+        del EdgeList
+
+        EdgeList = zip(User1,User2,Weights)
+
+        # Make the Graph
+        print 'Making Graph'
+        G = nx.Graph()
+
+        print 'Adding Nodes to Graph'
+        nodes = list(set(User1).union(set(User2)))
+        G.add_nodes_from(nodes)
+
+        # Add the appropriate edges
+        print 'Adding Edges to the Graph'
+        G.add_weighted_edges_from(EdgeList)
+
+        # Use networkx to set an appealing position
+        pos = nx.spring_layout(G)
+        edgewidth = [d['weight'] for (u,v,d) in G.edges(data=True)]
+
+        return G
+
+    # Make a mention network
+    elif Type == 'Ment':
+        print 'Getting Edges'
+        EdgeList = pd.read_csv(DFPath + r"2Tweet2Furious\\HashtagEdgeList.csv")
+
+        # Find the maximum weight of all the Edges
+        maxWeight = float(max(EdgeList['Weight']))
+
+        # Scale the weights
+        Weights = list(EdgeList['Weight'][EdgeList['Weight']>=Tol].values.flatten()/maxWeight)
+
+        # Get the users
+        User1 = list(EdgeList['User1'][EdgeList['Weight']>=Tol].values.flatten())
+        User2 = list(EdgeList['User2'][EdgeList['Weight']>=Tol].values.flatten())
+
+        # Clear the large edgelist from memory
+        del EdgeList
+
+        EdgeList = zip(User1,User2,Weights)
+
+        # Make the Graph
+        print 'Making Graph'
+        G = nx.Graph()
+
+        print 'Adding Nodes to Graph'
+        nodes = list(set(User1).union(set(User2)))
+        G.add_nodes_from(nodes)
+
+        # Add the appropriate edges
+        print 'Adding Edges to the Graph'
+        G.add_weighted_edges_from(EdgeList)
+
+        # Use networkx to set an appealing position
+        pos = nx.spring_layout(G)
+        edgewidth = [d['weight'] for (u,v,d) in G.edges(data=True)]
+
+        return G
+
+    else:
+        print "Sorry we don't support that type of network!"
