@@ -1,4 +1,7 @@
 DataPath.py
+AuthTokens.txt
+DataPath.txt
+Error_log.txt
 
-*.pyc
 *.csv
+*.pyc
