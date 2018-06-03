@@ -82,6 +82,8 @@ class User:
 
 		attribute = attribute.capitalize()
 		try:
+			if self.attributes[attribute] == '':
+				return 'N/A'
 			return self.attributes[attribute].replace('\\n', '\n').decode('utf-8')
 		except KeyError:
 			raise ValueError("Database does not contain the attribute: '" + attribute + "'.")
