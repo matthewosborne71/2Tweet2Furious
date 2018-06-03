@@ -75,17 +75,13 @@ class User:
 		attribute (str or unicode): name of an attribute of the user
 
 		Returns the specified attribute of the user as a unicode string.
-		If attribute is '', returns 'N/A'. Argument is not case sensitive.
+		Argument is not case sensitive.
 		"""
-		# Raises a TypeError if the attribute is not a string or unicode
 		if (type(attribute) is not str) and (type(attribute) is not unicode):
 			raise TypeError('Attribute should be a string or unicode.')
 
-		# Raises a TypeError if the username is not a string or unicode
 		attribute = attribute.capitalize()
 		try:
-			if self.attributes[attribute] == '': 
-				return 'N/A'
 			return self.attributes[attribute].replace('\\n', '\n').decode('utf-8')
 		except KeyError:
 			raise ValueError("Database does not contain the attribute: '" + attribute + "'.")
@@ -226,6 +222,10 @@ class User:
 		"""
 		if not isinstance(other, User):
 			raise TypeError("'compare' must be called on another user.")
+
+		if self.username == other.username:
+			common_dict = {'RTWeight':'N/A', 'HTWeight':'N/A', 'MentWeight':'N/A'}
+			return common_dict
 
 		common_dict = {}
 		with open(DFPath + 'ShortRTEdgeList.csv') as csvfile:
