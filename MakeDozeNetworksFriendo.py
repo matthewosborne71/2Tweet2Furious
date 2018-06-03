@@ -1,18 +1,22 @@
 ###############################################################################
 ##      MakeDozeNetworksFriendo
 ##      Matthew Osborne
+##      In Conjunction with: Austin Antoniou, Dan McGregor, Luke Andrejek
+##      For the Erdos Institute May 2018 Code program
 ###############################################################################
-##      Last Updated: May 31, 2018
+##      Last Updated: June 3, 2018
 ###############################################################################
 ## This file contains all the functions we will use to make the various networks
 ###############################################################################
 
+# We Need to import these packages for various functions
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 import holoviews as hv
 import DataPath as DP
 
+# Get the DataPaths
 DFPath,TweetPath = DP.getPaths()
 
 # This function will take in the name data you want to make the edgelist from,
@@ -95,6 +99,31 @@ def MakeEdgeList(Data,EdgeListName,type):
 
     else:
         print 'Sorry the type you have entered is not currently supported'
+
+def GetMax(Type):
+    if Type == 'RT':
+        EdgeList = pd.read_csv(DFPath + r"2Tweet2Furious\\ShortRTEdgeList.csv")
+
+        # Find the maximum weight of all the Edges
+        maxWeight = float(max(EdgeList['Weight']))
+        return maxWeight
+    elif Type == 'HT':
+        EdgeList = pd.read_csv(DFPath + r"2Tweet2Furious\\HashtagEdgeList.csv")
+
+        # Find the maximum weight of all the Edges
+        maxWeight = float(max(EdgeList['Weight']))
+        return maxWeight
+    elif Type == 'Ment':
+        EdgeList = pd.read_csv(DFPath + r"2Tweet2Furious\\HashtagEdgeList.csv")
+
+        # Find the maximum weight of all the Edges
+        maxWeight = float(max(EdgeList['Weight']))
+        return maxWeight
+    else:
+        return maxWeight
+        print "No dice!"
+
+
 
 # This function will take in a type and minimal edge weight, Tol, and spit out a
 # networkx graph object
@@ -219,17 +248,68 @@ def BuildGraph(Type,Tol):
     else:
         print "Sorry we don't support that type of network!"
 
+# This function takes in a networkx graph object, the desired position of the
+# nodes of the graph, the desired weights of the edges and the desired node Size
+# note that default node size is 5
 def DrawNetworkxGraph(G,pos,Weights,Size=5):
+
+    # open the matplotlib.plot figure and set it to be 20 by 20
     plt.figure(figsize = (20,20))
+
+    # turn of the axis labels
     plt.axis('off')
+
+    # Draw the graph nodes
     nx.draw_networkx_nodes(G,pos,node_size=Size)
+
+    # Draw the graph edges
     nx.draw_networkx_edges(G,pos,width=Weights)
+
+    # This opens the plot on your machine
     plt.show()
 
+# This function will draw a networkx graph and save it, in addition to the
+# inputs required of DrawNetworkxGraph you need to enter the type and Tolerance
+# Type must be "RT", "HT", or "Ment"
+def SaveNetworkxGraph(G,pos,Weights,Folder,Type,Tol,Size=5):
+
+    # set up the plot
+    plt.figure(figsize = (20,20))
+    plt.axis('off')
+
+    # Draw the nodes
+    nx.draw_networkx_nodes(G,pos,node_size=Size)
+
+    # Draw the edges
+    nx.draw_networkx_edges(G,pos,width=Weights)
+
+    # This part of the code will set the x and y axes so that the entire Graph
+    # is shown in the plot and is as large as possible
+    xpositions = []
+    ypositions = []
+    for node in G.nodes():
+        xpositions.extend([list(pos[node])[0]])
+        ypositions.extend([list(pos[node])[1]])
+    xmin = min(xpositions)
+    xmax = max(xpositions)
+    ymin = min(ypositions)
+    ymax = max(ypositions)
+    plt.ylim((ymin-.01,ymax+.01))
+    plt.xlim((xmin-.01,xmax+.01))
+
+    # Save the figure, you may need to change the filename based on your machine
+    plt.savefig(fname = DFPath + Folder + r'\\' + Type + 'MinWeight' + str(Tol) + '.png',bbox_inches='tight')
+
+    # Close the plot
+    plt.close()
+
+# This function takes in a networkx graph object and opens an html file with
+# an interactive holoviews graph consisting of the nodes and edges from the
+# networkx graph
 def MakeHVGraph(G):
     # Set plot options
     print "Setting plot options"
-    options = {'Graph': dict(node_size = 5, edge_line_width = .2,height=1000,width=1000,xaxis=None,yaxis=None)}
+    options = {'Graph': dict(node_size = 5, edge_line_width = .2,height=1000,width=1000,xaxis=None,yaxis=None,inspection_policy='nodes')}
     padding = dict(x=(-1.2, 1.2), y=(-1.2, 1.2))
     # Make a holoviews graph
     print "Making the Interactive graph"
@@ -242,4 +322,39 @@ def MakeHVGraph(G):
     plot = renderer.get_plot(Graph.options(options)).state
     from bokeh.io import output_file, save, show
     save(plot, 'hvplot.html')
+
+    # Open the plot
     show(plot)
+
+
+
+
+def SaveAllGraphs(Type):
+    Stop = False
+    max = GetMax(Type)
+
+    if Type == 'RT':
+        Folder = r'RTImages'
+    elif Type == 'HT':
+        Folder = r'HTImages'
+    elif Type == 'Ment':
+        Folder = r'MentImages'
+    else:
+        print 'Nope!'
+        Stop = True
+
+    if Stop == False:
+        print "Building First Graph"
+        G,pos0,Weights = BuildGraph(Type,1)
+        SaveNetworkxGraph(G,pos0,Weights,Folder,Type,1)
+        del G
+        del Weights
+
+        print "Building other Graphs"
+        for i in range(2,int(max)):
+            G,pos,Weights = BuildGraph(Type,i)
+            del pos
+            SaveNetworkxGraph(G,pos0,Weights,Folder,Type,i)
+            del G
+            del Weights
+            print i
