@@ -4,7 +4,7 @@
 
 Contained in this repository are materials from the Erdős Institute's Cőde Sprint May 30 - June 3, 2018.
 
-We are working with Twitter Data provided by the Center for the Study of Networks and Society, this data will not be shared in the repository. It is the intellectual property of the Center for the Study of Networks and Society.
+We are working with Twitter Data provided by the Center for the Study of Networks and Society; this data will not be shared in the repository. It is the intellectual property of the Center for the Study of Networks and Society.
 
 
 ## Code
@@ -15,14 +15,14 @@ We are working with Twitter Data provided by the Center for the Study of Network
 Contains functions for extracting the data from our data file csvs.
 
 ### User_Class.py
-#### Written by Dan McGregor and Austin Antoniou
+#### Written by Dan McGregor
 #### Last updated June 2, 2018
-This code defines the User Class in python. The class is for easier storage and management of the useres found in the provided Twitter Data.
+This code defines the User class in python. The class is for easier storage and management of the users found in the provided Twitter Data.
 
 ### Fetch_users.py
 #### Written by Dan McGregor
 #### Last updated June 1, 2018
-This code uses the tweepy python package to gather additional Twitter data on the users found in our dataset.
+This code uses the tweepy python library to gather additional Twitter data on the users found in our dataset.
 
 ### MakeDozeNetworksFriendo.py
 #### Written by Matthew Osborne
@@ -40,9 +40,9 @@ This code contains functions for analyzing the networks that were built with Mak
 This code is for analyzing the random digits in the names of our users.
 
 ### twGUI.py
-#### Written by Austin Antoniou and Dan McGregor
+#### Written by Austin Antoniou
 #### Last updated June 3, 2018
-This code creates a GUI that can help investigate the users found in our data.
+This code creates a GUI using the tkinter library that can help investigate and compare the users found in our data.
 
 ### tweetextract.py
 #### Written by Austin Antoniou and Matthew Osborne
